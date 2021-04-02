@@ -79,7 +79,10 @@ def crawl_new_card(uri: str):
     soup = BeautifulSoup(r.text, 'lxml')
     card = get_support_card(uri, soup)
 
-    if SupportCard.query.filter_by(second_name=card.second_name).first():
+    if db_session.query(SupportCard).filter_by(
+            second_name=card.second_name,
+            card_name=card.card_name,
+            rare_degree=card.rare_degree).first():
         return False
 
     get_card_event(soup, card)
