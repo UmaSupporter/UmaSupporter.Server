@@ -71,7 +71,7 @@ def crawl_new_umamusume(uri: str):
     soup = BeautifulSoup(r.text, 'lxml')
     gamewith_id = get_gamewith_id(uri)
     illust = get_umamusume_illust_url(soup)
-    filename = download_image(illust, base_path='/Users/suho/Workspaces/umamusume/umamusume-server/static/images')
+    filename = download_image(illust)
 
     uma_name = get_umamusume_name(soup)
     umamusume = get_umamusume_info_table(soup)
@@ -84,6 +84,12 @@ def crawl_new_umamusume(uri: str):
                                 uma_image=filename,
                                 gamewith_wiki_id=gamewith_id,
                                 rare_degree=get_rare_degree(umamusume['初期レア']))
+
+    if db_session.query(Umamusume).filter_by(
+            second_name=umamusume_model.second_name,
+            uma_name=umamusume_model.uma_name,
+            rare_degree=umamusume_model.rare_degree).first():
+        return False
 
     db_session.add(umamusume_model)
     for event in umamusume_events:
