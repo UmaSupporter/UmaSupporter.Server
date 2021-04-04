@@ -25,11 +25,14 @@ def get_support_card(uri: str, soup: BeautifulSoup):
 
     support_card = SupportCard(
         card_name=card_name,
+        card_name_kr=card_name,
         card_type=card_type,
+        card_type_kr=card_type,
         card_image=image_filename,
         gamewith_wiki_id=wiki_id,
         rare_degree=rare_degree,
-        second_name=second_name
+        second_name=second_name,
+        second_name_kr=second_name
     )
     db_session.add(support_card)
     return support_card
@@ -39,7 +42,9 @@ def get_card_event(soup: BeautifulSoup, support_card: SupportCard):
     choice_tables = soup.find_all('div', {"class": "uma_choice_table"})
     for choice_table in choice_tables:
         title = choice_table.find_previous_sibling('h3').text
-        card_event = CardEvent(title=title, support_card=support_card)
+        card_event = CardEvent(title=title,
+                               title_kr=title,
+                               support_card=support_card)
         get_card_event_choice(choice_table, card_event)
         db_session.add(card_event)
 
@@ -48,8 +53,12 @@ def get_card_event_choice(soup: BeautifulSoup, card_event: CardEvent):
     tr_tags = soup.find_all('tr')
     for tr in tr_tags:
         title = tr.find('th').text
-        effect = tr.find('td').text
-        card_event_choice = CardEventChoice(title=title, effect=effect, event=card_event)
+        effect = tr.find('td').get_text(separator="\n")
+        card_event_choice = CardEventChoice(title=title,
+                                            title_kr=title,
+                                            effect=effect,
+                                            effect_kr=effect,
+                                            event=card_event)
         db_session.add(card_event_choice)
 
 
