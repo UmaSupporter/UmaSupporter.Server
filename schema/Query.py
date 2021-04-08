@@ -1,6 +1,7 @@
 import graphene
 
-from models import SupportCard, Umamusume
+from models import SupportCard, Umamusume, Skill
+from schema.Skill import SkillType
 from schema.SupportCard import SupportCardType
 from schema.Umamusume import UmamusumeType
 
@@ -20,6 +21,11 @@ class Query(graphene.ObjectType):
 
     umamusume_id = graphene.Field(UmamusumeType,
                                      uuid=graphene.Int(required=True))
+
+    skill_name = graphene.Field(SkillType,
+                              name=graphene.String())
+
+    skill = graphene.List(SkillType)
 
     def resolve_support_card_id(self, info, uuid: int):
         return SupportCardType.get_query(info).filter(SupportCard.uuid == uuid).first()
@@ -52,3 +58,12 @@ class Query(graphene.ObjectType):
             query = query.filter(Umamusume.rare_degree == rare_degree)
 
         return query.all()
+
+    def resolve_skill_name(self, info, name: str):
+        return SkillType.get_query(info).filter(Skill.name == name).first()
+
+    def resolve_skill(self, info):
+        query = SkillType.get_query(info)
+
+        return query.all()
+

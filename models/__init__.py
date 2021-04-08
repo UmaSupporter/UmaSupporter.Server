@@ -124,4 +124,22 @@ class UmaEventChoice(Base):
         self.event_id = event.uuid
 
 
+class Skill(Base):
+    __tablename__ = 'skill'
+
+    uuid = Column(Integer, primary_key=True)
+    name = Column(String(100))
+    name_kr = Column(String(100))
+    description = Column(MEDIUMTEXT)
+    condition = Column(MEDIUMTEXT)
+    icon = Column(String(100))
+
+    def __init__(self, name: str, name_kr: str, description: str, condition: str, icon: str):
+        self.name = name
+        self.name_kr = name_kr
+        self.description = description
+        self.condition = condition
+        self.icon = icon
+
+
 Base.metadata.create_all(engine)
