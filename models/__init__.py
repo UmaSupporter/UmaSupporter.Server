@@ -1,7 +1,7 @@
 # coding: utf-8
 from database import Base, engine
 
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.mysql import MEDIUMTEXT
 
@@ -140,6 +140,22 @@ class Skill(Base):
         self.description = description
         self.condition = condition
         self.icon = icon
+
+
+class Buff(Base):
+    __tablename__ = 'buff'
+
+    uuid = Column(Integer, primary_key=True)
+    name = Column(String(100))
+    name_kr = Column(String(100))
+    effect_kr = Column(MEDIUMTEXT)
+    is_debuff = Column(Boolean())
+
+    def __init__(self, name: str, name_kr: str, effect_kr: str, is_debuff: bool):
+        self.name = name
+        self.name_kr = name_kr
+        self.effect_kr = effect_kr
+        self.is_debuff = is_debuff
 
 
 Base.metadata.create_all(engine)
