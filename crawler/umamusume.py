@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 
 from database import db_session
 from models import Umamusume, UmaEvent, UmaEventChoice
+from translator import translate
 from utils import get_gamewith_id, download_image
 
 
@@ -63,7 +64,7 @@ def get_rare_degree(value: str) -> int:
     return int(value.replace('星', ''))
 
 
-def crawl_new_umamusume(uri: str):
+def crawl_new_umamusume(uri: str, update: bool = False):
     r = requests.get(uri)
     if r.status_code != 200:
         return False
@@ -85,10 +86,14 @@ def crawl_new_umamusume(uri: str):
                                 gamewith_wiki_id=gamewith_id,
                                 rare_degree=get_rare_degree(umamusume['初期レア']))
 
-    if db_session.query(Umamusume).filter_by(
+    model_from_db = db_session.query(Umamusume).filter_by(
             second_name=umamusume_model.second_name,
             uma_name=umamusume_model.uma_name,
-            rare_degree=umamusume_model.rare_degree).first():
+            rare_degree=umamusume_model.rare_degree).first()
+
+    if model_from_db and update:
+        umamusume_model = model_from_db
+    elif model_from_db:
         return False
 
     db_session.add(umamusume_model)
@@ -107,5 +112,7 @@ def crawl_new_umamusume(uri: str):
 
     print(umamusume_model.__dict__)
     db_session.commit()
+
+    translate()
 
     return True
