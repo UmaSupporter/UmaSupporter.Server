@@ -65,5 +65,39 @@ def shutdown_session(exception=None):
     db_session.remove()
 
 
+@app.route('/health-check')
+def health_check():
+    return 'ok', 200
+
+@app.route('/ops/update/card', methods=['POST'])
+def update_support_card():
+    params = request.get_json()
+    uri = params.get('new_card_uri')
+    input_password = params.get('root_password')
+    if not input_password == root_password:
+        return 'field: root_password is missing or do not correct', 401
+    if not uri:
+        return 'field: new_card_uri need.', 400
+    if crawl_new_card(uri, True):
+        return 'ok', 201
+    else:
+        return 'crawl failed', 202
+
+
+@app.route('/ops/update/uma', methods=['POST'])
+def update_umamusume():
+    params = request.get_json()
+    uri = params.get('new_card_uri')
+    input_password = params.get('root_password')
+    if not input_password == root_password:
+        return 'field: root_password is missing or do not correct', 401
+    if not uri:
+        return 'field: new_card_uri need.', 400
+    if crawl_new_umamusume(uri, True):
+        return 'ok', 201
+    else:
+        return 'crawl failed', 202
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=5000)

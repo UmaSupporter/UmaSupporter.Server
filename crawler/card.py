@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 
 from database import db_session
 from models import SupportCard, CardEvent, CardEventChoice
+from translator import translate
 from utils import download_image
 
 
@@ -62,7 +63,7 @@ def get_card_event_choice(soup: BeautifulSoup, card_event: CardEvent):
         db_session.add(card_event_choice)
 
 
-def crawl_new_card(uri: str):
+def crawl_new_card(uri: str, update: bool = False):
     # https://gamewith.jp/uma-musume/article/show/266299
     r = requests.get(uri)
     if r.status_code != 200:
@@ -71,13 +72,19 @@ def crawl_new_card(uri: str):
     soup = BeautifulSoup(r.text, 'lxml')
     card = get_support_card(uri, soup)
 
-    if db_session.query(SupportCard).filter_by(
+    card_from_db = db_session.query(SupportCard).filter_by(
             second_name=card.second_name,
             card_name=card.card_name,
-            rare_degree=card.rare_degree).first():
+            rare_degree=card.rare_degree).first()
+
+    if card_from_db and update:
+        card = card_from_db
+    elif card_from_db:
         return False
 
     get_card_event(soup, card)
     db_session.commit()
+
+    translate()
 
     return True
