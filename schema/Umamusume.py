@@ -2,7 +2,7 @@ import graphene
 from graphene import relay, ObjectType
 from graphene_sqlalchemy import SQLAlchemyObjectType
 
-from models import UmaEvent, Umamusume, UmaEventChoice
+from models.uma import Umamusume, UmaEvent, UmaEventChoice
 
 
 class UmamusumeType(SQLAlchemyObjectType):

@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from database import db_session
-from models import Umamusume, UmaEvent, UmaEventChoice
+from models.uma import Umamusume, UmaEvent, UmaEventChoice
 from translator import translate
 from utils import get_gamewith_id, download_image
 

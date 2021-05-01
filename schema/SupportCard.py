@@ -2,7 +2,7 @@ import graphene
 from graphene import relay, ObjectType
 from graphene_sqlalchemy import SQLAlchemyObjectType
 
-from models import SupportCard, CardEvent, CardEventChoice
+from models.card import SupportCard, CardEvent, CardEventChoice
 
 
 class SupportCardType(SQLAlchemyObjectType):

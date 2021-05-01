@@ -5,7 +5,7 @@ from flask_cors import CORS
 from flask_graphql import GraphQLView
 
 from crawler import crawl_new_card, crawl_new_umamusume
-from database import db_session
+from database import Base, engine
 from schema import schema
 
 app = Flask(__name__)
@@ -23,6 +23,7 @@ app.add_url_rule(
 CORS(app)
 
 root_password = os.environ['ROOT_PASSWORD']
+Base.metadata.create_all(engine)
 
 
 @app.route('/images/<path:path>')
@@ -60,14 +61,10 @@ def new_umamusume():
         return 'crawl failed', 202
 
 
-@app.teardown_appcontext
-def shutdown_session(exception=None):
-    db_session.remove()
-
-
 @app.route('/health-check')
 def health_check():
     return 'ok', 200
+
 
 @app.route('/ops/update/card', methods=['POST'])
 def update_support_card():
