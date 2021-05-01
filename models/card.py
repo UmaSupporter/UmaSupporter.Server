@@ -3,7 +3,6 @@ from sqlalchemy.dialects.mysql import MEDIUMTEXT
 from sqlalchemy.orm import relationship, backref
 
 from database import Base
-from models.relationship import card_skill_table
 
 
 class SupportCard(Base):
@@ -20,9 +19,8 @@ class SupportCard(Base):
     second_name = Column(String(200))
     second_name_kr = Column(String(200))
     skills = relationship(
-        "Skill",
-        secondary=card_skill_table,
-        back_populates="cards")
+        "CardSkill",
+        back_populates="card")
 
 
 class CardEvent(Base):

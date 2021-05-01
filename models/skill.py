@@ -3,7 +3,6 @@ from sqlalchemy.dialects.mysql import MEDIUMTEXT
 from sqlalchemy.orm import relationship, backref
 
 from database import Base
-from models.relationship import card_skill_table, uma_skill_table
 from models.enum import SkillGradeEnum, SkillBuffTypeEnum, SkillDistanceTypeEnum, SkillOperationTypeEnum
 
 
@@ -45,14 +44,12 @@ class Skill(Base):
                         cascade='all, save-update'))
 
     cards = relationship(
-        "SupportCard",
-        secondary=card_skill_table,
-        back_populates="skills")
+        "CardSkill",
+        back_populates="skill")
 
     uma_tachi = relationship(
-        "Umamusume",
-        secondary=uma_skill_table,
-        back_populates="skills")
+        "UmaSkill",
+        back_populates="skill")
 
     def __init__(self, name: str, name_kr: str, description: str, condition: str, icon: str):
         self.name = name
