@@ -3,7 +3,7 @@ from sqlalchemy.dialects.mysql import MEDIUMTEXT
 from sqlalchemy.orm import relationship, backref
 
 from database import Base
-from models.relationship import uma_skill_table
+from models.relationship import UmaSkill
 
 
 class Umamusume(Base):
@@ -18,9 +18,8 @@ class Umamusume(Base):
     gamewith_wiki_id = Column(Integer)
     rare_degree = Column(Integer)
     skills = relationship(
-        "Skill",
-        secondary=uma_skill_table,
-        back_populates="uma_tachi")
+        "UmaSkill",
+        back_populates="uma")
 
     def __init__(self,
                  uma_name: str,

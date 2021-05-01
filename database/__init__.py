@@ -11,7 +11,7 @@ db_host = os.environ['DB_HOST']
 db_name = os.environ['DB_NAME']
 
 db_url = f"mysql+pymysql://{db_user}:{db_pass}@{db_host}/{db_name}?charset=utf8mb4"
-engine = create_engine(db_url, convert_unicode=True)
+engine = create_engine(db_url, convert_unicode=True, pool_size=20, max_overflow=0)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))

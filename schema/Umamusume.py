@@ -2,7 +2,13 @@ import graphene
 from graphene import relay, ObjectType
 from graphene_sqlalchemy import SQLAlchemyObjectType
 
+from models.relationship import UmaSkill
 from models.uma import Umamusume, UmaEvent, UmaEventChoice
+
+
+class UmaSkillType(SQLAlchemyObjectType):
+    class Meta:
+        model = UmaSkill
 
 
 class UmamusumeType(SQLAlchemyObjectType):

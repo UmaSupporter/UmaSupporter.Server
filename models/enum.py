@@ -39,3 +39,14 @@ class SkillOperationTypeEnum(enum.Enum):
     preceding = "선행"
     pre_entry = "선입"
     post_entry = "후입"
+
+
+class CardSkillCategoryEnum(enum.Enum):
+    growth = '육성'
+    belong = '소지'
+
+
+class UmaSkillCategoryEnum(enum.Enum):
+    origin = '고유'
+    basic = '기본'
+    awakening = '각성'
