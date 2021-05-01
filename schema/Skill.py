@@ -1,12 +1,33 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
 
-from models import Skill
+from models.skill import Skill, SkillBuffType, SkillGrade, SkillDistanceType, SkillOperationType
 
 
 class SkillType(SQLAlchemyObjectType):
     class Meta:
         model = Skill
+        exclude_fields = ("grade_id", "buff_type_id", "distance_type_id", "operation_type_id")
+
+
+class SkillBuffTypeType(SQLAlchemyObjectType):
+    class Meta:
+        model = SkillBuffType
+
+
+class SkillGradeType(SQLAlchemyObjectType):
+    class Meta:
+        model = SkillGrade
+
+
+class SkillDistanceTypeType(SQLAlchemyObjectType):
+    class Meta:
+        model = SkillDistanceType
+
+
+class SkillOperationTypeType(SQLAlchemyObjectType):
+    class Meta:
+        model = SkillOperationType
 
 
 class SkillQuery(graphene.ObjectType):
@@ -20,5 +41,4 @@ class SkillQuery(graphene.ObjectType):
 
     def resolve_skill(self, info):
         query = SkillType.get_query(info)
-
         return query.all()

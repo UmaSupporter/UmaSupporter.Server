@@ -1,7 +1,7 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
 
-from models import Buff
+from models.buff import Buff
 
 
 class BuffType(SQLAlchemyObjectType):

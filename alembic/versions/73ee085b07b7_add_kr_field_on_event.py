@@ -1,7 +1,7 @@
 """add kr field on event
 
 Revision ID: 73ee085b07b7
-Revises: 58fdad9fd1c2
+Revises: be5119c0c923
 Create Date: 2021-04-04 05:11:18.238152
 
 """
@@ -11,7 +11,7 @@ from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
 revision = '73ee085b07b7'
-down_revision = '58fdad9fd1c2'
+down_revision = 'be5119c0c923'
 branch_labels = None
 depends_on = None
 

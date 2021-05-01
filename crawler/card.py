@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from database import db_session
-from models import SupportCard, CardEvent, CardEventChoice
+from models.card import SupportCard, CardEvent, CardEventChoice
 from translator import translate
 from utils import download_image
 
