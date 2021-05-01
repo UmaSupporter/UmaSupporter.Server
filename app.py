@@ -5,7 +5,7 @@ from flask_cors import CORS
 from flask_graphql import GraphQLView
 
 from crawler import crawl_new_card, crawl_new_umamusume
-from database import Base, engine
+from database import Base, engine, db_session
 from schema import schema
 
 app = Flask(__name__)
@@ -94,6 +94,11 @@ def update_umamusume():
         return 'ok', 201
     else:
         return 'crawl failed', 202
+
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db_session.remove()
 
 
 if __name__ == '__main__':
