@@ -39,18 +39,25 @@ def get_support_card(uri: str, soup: BeautifulSoup):
     return support_card
 
 
-def get_card_event(soup: BeautifulSoup, support_card: SupportCard):
+def get_card_event(soup: BeautifulSoup, support_card: SupportCard, update: bool = False):
     choice_tables = soup.find_all('div', {"class": "uma_choice_table"})
     for choice_table in choice_tables:
         title = choice_table.find_previous_sibling('h3').text
         card_event = CardEvent(title=title,
                                title_kr=title,
                                support_card=support_card)
-        get_card_event_choice(choice_table, card_event)
+        event_from_db = db_session.query(CardEvent).filter_by(
+            support_card_id=card_event.support_card_id,
+            title=card_event.title).first()
+
+        if event_from_db and update:
+            card_event = event_from_db
+
+        get_card_event_choice(choice_table, card_event, update)
         db_session.add(card_event)
 
 
-def get_card_event_choice(soup: BeautifulSoup, card_event: CardEvent):
+def get_card_event_choice(soup: BeautifulSoup, card_event: CardEvent, update: bool = False):
     tr_tags = soup.find_all('tr')
     for tr in tr_tags:
         title = tr.find('th').text
@@ -60,7 +67,12 @@ def get_card_event_choice(soup: BeautifulSoup, card_event: CardEvent):
                                             effect=effect,
                                             effect_kr=effect,
                                             event=card_event)
-        db_session.add(card_event_choice)
+        event_from_db = db_session.query(CardEventChoice).filter_by(
+            title=card_event_choice.title,
+            effect=card_event_choice.effect,
+            event_id=card_event_choice.event_id).first()
+        if not event_from_db:
+            db_session.add(card_event_choice)
 
 
 def crawl_new_card(uri: str, update: bool = False):
@@ -82,7 +94,7 @@ def crawl_new_card(uri: str, update: bool = False):
     elif card_from_db:
         return False
 
-    get_card_event(soup, card)
+    get_card_event(soup, card, update)
     db_session.commit()
 
     translate()

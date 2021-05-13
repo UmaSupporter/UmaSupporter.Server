@@ -4,8 +4,8 @@ from typing import List
 import requests
 from bs4 import BeautifulSoup
 
-from models.card import CardEventChoice
-from models.uma import UmaEvent, UmaEventChoice
+from models.card import CardEventChoice, SupportCard
+from models.uma import UmaEvent, UmaEventChoice, Umamusume
 
 
 def iter_card_uri():
@@ -42,3 +42,13 @@ def iter_uma_event():
 def iter_card_event_choice():
     for choice in CardEventChoice.query.all():
         yield choice
+
+
+def iter_uma():
+    for uma in Umamusume.query.all():
+        yield uma
+
+
+def iter_card():
+    for card in SupportCard.query.all():
+        yield card

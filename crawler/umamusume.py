@@ -97,18 +97,41 @@ def crawl_new_umamusume(uri: str, update: bool = False):
         return False
 
     db_session.add(umamusume_model)
+    print('get umamusume')
     for event in umamusume_events:
         umamusume_event_model = UmaEvent(title=event['title'],
                                          title_kr=event['title'],
                                          umamusume=umamusume_model)
+
+        if umamusume_model.uuid:
+            model_from_db = db_session.query(UmaEvent).filter_by(
+                title=umamusume_event_model.title,
+                umamusume=umamusume_event_model.umamusume).first()
+
+        if model_from_db and not update:
+            continue
+
         db_session.add(umamusume_event_model)
+        print('get event')
+
         for key, value in event['event_choice'].items():
             umamusume_event_choices = UmaEventChoice(title=key,
                                                      title_kr=key,
                                                      effect=value,
                                                      effect_kr=value,
                                                      event=umamusume_event_model)
-            db_session.add(umamusume_event_choices)
+            if umamusume_event_model.uuid:
+                model_from_db = db_session.query(UmaEventChoice).filter_by(
+                    title=umamusume_event_choices.title,
+                    event_id=umamusume_event_choices.event_id,
+                ).first()
+
+            if not model_from_db:
+                db_session.add(umamusume_event_choices)
+            else:
+                model_from_db.effect = umamusume_event_choices.effect
+                model_from_db.effect_kr = umamusume_event_choices.effect_kr
+                db_session.add(model_from_db)
 
     print(umamusume_model.__dict__)
     db_session.commit()
