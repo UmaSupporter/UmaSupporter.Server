@@ -3,7 +3,9 @@ from typing import Dict, List
 import requests
 from bs4 import BeautifulSoup
 
+from crawler.skill import crawl_umamusume_skill, skill_name_polyfill, get_uma_skill_category
 from database import db_session
+from models import Skill, UmaSkill
 from models.uma import Umamusume, UmaEvent, UmaEventChoice
 from translator import translate
 from utils import get_gamewith_id, download_image
@@ -64,6 +66,20 @@ def get_rare_degree(value: str) -> int:
     return int(value.replace('星', ''))
 
 
+def get_related_skill_from_db(url: str, uma: Umamusume):
+    relation_skills = crawl_umamusume_skill(url)
+    for relation_skill in relation_skills:
+        relation_skill_name = skill_name_polyfill(relation_skill['name'])
+        skill = Skill.query.filter(Skill.name == relation_skill_name).first()
+        if not skill:
+            print(f"skill not exists")
+            return
+        category = get_uma_skill_category(relation_skill['category'])
+        cs = UmaSkill(category=category)
+        cs.uma = uma
+        skill.uma_tachi.append(cs)
+
+
 def crawl_new_umamusume(uri: str, update: bool = False):
     r = requests.get(uri)
     if r.status_code != 200:
@@ -97,20 +113,47 @@ def crawl_new_umamusume(uri: str, update: bool = False):
         return False
 
     db_session.add(umamusume_model)
+    print('get umamusume')
     for event in umamusume_events:
         umamusume_event_model = UmaEvent(title=event['title'],
                                          title_kr=event['title'],
                                          umamusume=umamusume_model)
+
+        if umamusume_model.uuid:
+            model_from_db = db_session.query(UmaEvent).filter_by(
+                title=umamusume_event_model.title,
+                umamusume=umamusume_event_model.umamusume).first()
+
+        if model_from_db and not update:
+            continue
+
         db_session.add(umamusume_event_model)
+        print('get event')
+
         for key, value in event['event_choice'].items():
             umamusume_event_choices = UmaEventChoice(title=key,
                                                      title_kr=key,
                                                      effect=value,
                                                      effect_kr=value,
                                                      event=umamusume_event_model)
-            db_session.add(umamusume_event_choices)
+            if umamusume_event_model.uuid:
+                model_from_db = db_session.query(UmaEventChoice).filter_by(
+                    title=umamusume_event_choices.title,
+                    event_id=umamusume_event_choices.event_id,
+                ).first()
+
+            if not model_from_db:
+                db_session.add(umamusume_event_choices)
+            else:
+                model_from_db.effect = umamusume_event_choices.effect
+                model_from_db.effect_kr = umamusume_event_choices.effect_kr
+                db_session.add(model_from_db)
 
     print(umamusume_model.__dict__)
+
+    if not update:
+        get_related_skill_from_db(uri, umamusume_model)
+
     db_session.commit()
 
     translate()
