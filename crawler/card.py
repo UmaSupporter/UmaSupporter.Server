@@ -4,7 +4,9 @@ from os import path
 import requests
 from bs4 import BeautifulSoup
 
+from crawler.skill import crawl_umamusume_skill, skill_name_polyfill, get_card_skill_category
 from database import db_session
+from models import Skill, CardSkill
 from models.card import SupportCard, CardEvent, CardEventChoice
 from translator import translate
 from utils import download_image
@@ -75,6 +77,20 @@ def get_card_event_choice(soup: BeautifulSoup, card_event: CardEvent, update: bo
             db_session.add(card_event_choice)
 
 
+def get_related_skill_from_db(url: str, card: SupportCard,):
+    relation_skills = crawl_umamusume_skill(url)
+    for relation_skill in relation_skills:
+        relation_skill_name = skill_name_polyfill(relation_skill['name'])
+        skill = Skill.query.filter(Skill.name == relation_skill_name).first()
+        if not skill:
+            print(f"skill not exists")
+            return
+        category = get_card_skill_category(relation_skill['category'])
+        cs = CardSkill(category=category)
+        cs.card = card
+        skill.cards.append(cs)
+
+
 def crawl_new_card(uri: str, update: bool = False):
     # https://gamewith.jp/uma-musume/article/show/266299
     r = requests.get(uri)
@@ -95,6 +111,8 @@ def crawl_new_card(uri: str, update: bool = False):
         return False
 
     get_card_event(soup, card, update)
+    if not update:
+        get_related_skill_from_db(uri, card)
     db_session.commit()
 
     translate()

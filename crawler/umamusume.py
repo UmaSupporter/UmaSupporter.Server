@@ -3,7 +3,9 @@ from typing import Dict, List
 import requests
 from bs4 import BeautifulSoup
 
+from crawler.skill import crawl_umamusume_skill, skill_name_polyfill, get_uma_skill_category
 from database import db_session
+from models import Skill, UmaSkill
 from models.uma import Umamusume, UmaEvent, UmaEventChoice
 from translator import translate
 from utils import get_gamewith_id, download_image
@@ -62,6 +64,20 @@ def get_umamusume_illust_url(soup: BeautifulSoup) -> str:
 
 def get_rare_degree(value: str) -> int:
     return int(value.replace('星', ''))
+
+
+def get_related_skill_from_db(url: str, uma: Umamusume):
+    relation_skills = crawl_umamusume_skill(url)
+    for relation_skill in relation_skills:
+        relation_skill_name = skill_name_polyfill(relation_skill['name'])
+        skill = Skill.query.filter(Skill.name == relation_skill_name).first()
+        if not skill:
+            print(f"skill not exists")
+            return
+        category = get_uma_skill_category(relation_skill['category'])
+        cs = UmaSkill(category=category)
+        cs.uma = uma
+        skill.uma_tachi.append(cs)
 
 
 def crawl_new_umamusume(uri: str, update: bool = False):
@@ -134,6 +150,10 @@ def crawl_new_umamusume(uri: str, update: bool = False):
                 db_session.add(model_from_db)
 
     print(umamusume_model.__dict__)
+
+    if not update:
+        get_related_skill_from_db(uri, umamusume_model)
+
     db_session.commit()
 
     translate()
