@@ -12,7 +12,7 @@ from models import Umamusume, Skill, SupportCard, UmaEvent, UmaEventChoice, Card
 
 def init_admin(app: Flask, db_session: scoped_session):
 
-    app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+    app.config['FLASK_ADMIN_SWATCH'] = 'sandstone'
     admin = Admin(app, name='UmaSupporter', template_mode='bootstrap3')
 
     admin.add_view(UmaView(Umamusume, db_session, category='Umamusume'))
