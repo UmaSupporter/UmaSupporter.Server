@@ -4,7 +4,7 @@ from flask import Flask, send_from_directory, request
 from flask_cors import CORS
 from flask_graphql import GraphQLView
 
-from admin import init_admin
+from admin import init_admin, init_login
 from crawler import crawl_new_card, crawl_new_umamusume
 from database import Base, engine, db_session
 from schema import schema
@@ -21,7 +21,6 @@ app.add_url_rule(
     )
 )
 app.secret_key = os.environ['SECRET_KEY']
-
 CORS(app)
 
 root_password = os.environ['ROOT_PASSWORD']
@@ -104,5 +103,6 @@ def shutdown_session(exception=None):
 
 
 if __name__ == '__main__':
+    init_login(app)
     init_admin(app, db_session)
     app.run(host='0.0.0.0', debug=True, port=5000)
