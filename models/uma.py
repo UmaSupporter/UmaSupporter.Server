@@ -19,7 +19,8 @@ class Umamusume(Base):
     rare_degree = Column(Integer)
     skills = relationship(
         "UmaSkill",
-        back_populates="uma")
+        back_populates="uma",
+        cascade="all, delete-orphan")
 
     def __init__(self,
                  uma_name: str,
@@ -37,6 +38,11 @@ class Umamusume(Base):
         self.gamewith_wiki_id = gamewith_wiki_id
         self.rare_degree = rare_degree
 
+    def __str__(self):
+        return f"{self.uma_name} - {self.second_name}"
+
+    def __repr__(self):
+        return f"{self.uma_name} - {self.second_name}"
 
 class UmaEvent(Base):
     __tablename__ = 'uma_event'
@@ -57,6 +63,8 @@ class UmaEvent(Base):
         self.umamusume = umamusume
         self.umamusume_id = umamusume.uuid
 
+    def __repr__(self):
+        return f"{self.title}"
 
 class UmaEventChoice(Base):
     __tablename__ = 'uma_event_choice'
@@ -80,3 +88,6 @@ class UmaEventChoice(Base):
         self.effect_kr = effect_kr
         self.event = event
         self.event_id = event.uuid
+
+    def __repr__(self):
+        return f"{self.title}"
