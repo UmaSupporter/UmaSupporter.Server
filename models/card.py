@@ -20,7 +20,11 @@ class SupportCard(Base):
     second_name_kr = Column(String(200))
     skills = relationship(
         "CardSkill",
-        back_populates="card")
+        back_populates="card",
+        cascade="all, delete-orphan")
+
+    def __repr__(self):
+        return f"{self.card_name} - {self.second_name}"
 
 
 class CardEvent(Base):
@@ -35,6 +39,9 @@ class CardEvent(Base):
                                 backref=backref('card_event',
                                                 uselist=True,
                                                 cascade='delete,all'))
+
+    def __repr__(self):
+        return f"{self.title}"
 
 
 class CardEventChoice(Base):
@@ -51,3 +58,6 @@ class CardEventChoice(Base):
                          backref=backref('card_event_choice',
                                          uselist=True,
                                          cascade='delete,all'))
+
+    def __repr__(self):
+        return f"{self.title}"

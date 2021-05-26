@@ -16,6 +16,9 @@ class CardSkill(Base):
     card = relationship("SupportCard", back_populates="skills")
     skill = relationship("Skill", back_populates="cards")
 
+    def __repr__(self):
+        return f"{self.card}, {self.skill}"
+
 
 class UmaSkill(Base):
     __tablename__ = 'uma_and_skill'
@@ -27,3 +30,6 @@ class UmaSkill(Base):
                   nullable=False)
     uma = relationship("Umamusume", back_populates="skills")
     skill = relationship("Skill", back_populates="uma_tachi")
+
+    def __repr__(self):
+        return f"{self.uma}, {self.skill}"

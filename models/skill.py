@@ -58,6 +58,12 @@ class Skill(Base):
         self.condition = condition
         self.icon = icon
 
+    def __str__(self):
+        return f"{self.name}"
+
+    def __repr__(self):
+        return f"{self.name}"
+
 
 class SkillGrade(Base):
     __tablename__ = 'skill_grade'
@@ -66,6 +72,9 @@ class SkillGrade(Base):
     name = Column(Enum(SkillGradeEnum,
                        values_callable=lambda x: [str(e.value) for e in SkillGradeEnum]),
                   nullable=False)
+
+    def __repr__(self):
+        return f"{self.name.value}"
 
 
 class SkillBuffType(Base):
@@ -76,6 +85,9 @@ class SkillBuffType(Base):
                        values_callable=lambda x: [str(e.value) for e in SkillBuffTypeEnum]),
                   nullable=False)
 
+    def __repr__(self):
+        return f"{self.name.value}"
+
 
 class SkillDistanceType(Base):
     __tablename__ = 'skill_distance_type'
@@ -85,6 +97,9 @@ class SkillDistanceType(Base):
                        values_callable=lambda x: [str(e.value) for e in SkillDistanceTypeEnum]),
                   nullable=False)
 
+    def __repr__(self):
+        return f"{self.name.value}"
+
 
 class SkillOperationType(Base):
     __tablename__ = 'skill_operation_type'
@@ -93,3 +108,6 @@ class SkillOperationType(Base):
     name = Column(Enum(SkillOperationTypeEnum,
                        values_callable=lambda x: [str(e.value) for e in SkillOperationTypeEnum]),
                   nullable=False)
+
+    def __repr__(self):
+        return f"{self.name.value}"
