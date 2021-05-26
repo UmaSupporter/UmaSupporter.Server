@@ -73,7 +73,7 @@ def get_related_skill_from_db(url: str, uma: Umamusume):
         skill = Skill.query.filter(Skill.name == relation_skill_name).first()
         if not skill:
             print(f"skill not exists")
-            return
+            continue
         category = get_uma_skill_category(relation_skill['category'])
         cs = UmaSkill(category=category)
         cs.uma = uma
