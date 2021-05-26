@@ -26,6 +26,9 @@ CORS(app)
 root_password = os.environ['ROOT_PASSWORD']
 Base.metadata.create_all(engine)
 
+init_login(app)
+init_admin(app, db_session)
+
 
 @app.route('/images/<path:path>')
 def send_image(path):
@@ -103,6 +106,4 @@ def shutdown_session(exception=None):
 
 
 if __name__ == '__main__':
-    init_login(app)
-    init_admin(app, db_session)
     app.run(host='0.0.0.0', debug=True, port=5000)
