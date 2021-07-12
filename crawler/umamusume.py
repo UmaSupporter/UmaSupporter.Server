@@ -94,10 +94,15 @@ def crawl_new_umamusume(uri: str, update: bool = False):
     umamusume = get_umamusume_info_table(soup)
     umamusume_events = get_umamusume_event(soup)
 
+    if '二つ名' in umamusume:
+        second_name = umamusume['二つ名']
+    else:
+        second_name = umamusume['固有二つ名']
+
     umamusume_model = Umamusume(uma_name=uma_name,
                                 uma_name_kr=uma_name,
-                                second_name=umamusume['二つ名'],
-                                second_name_kr=umamusume['二つ名'],
+                                second_name=second_name,
+                                second_name_kr=second_name,
                                 uma_image=filename,
                                 gamewith_wiki_id=gamewith_id,
                                 rare_degree=get_rare_degree(umamusume['初期レア']))
