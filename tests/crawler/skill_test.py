@@ -32,7 +32,7 @@ def test_get_uma_skill_list(uma_soup):
     ]
     actual = get_skill_list(uma_soup)
 
-    assert expect == actual
+    assert [i for i in expect if i not in actual] == []
 
 
 def test_get_card_skill_list(card_soup):
@@ -48,4 +48,4 @@ def test_get_card_skill_list(card_soup):
     ]
     actual = get_skill_list(card_soup)
 
-    assert  expect == actual
+    assert [i for i in expect if i not in actual] == []

@@ -35,6 +35,19 @@ def send_image(path):
     return send_from_directory('static/images', path)
 
 
+@app.route('/upload', methods=['POST'])
+def get_image():
+    params = request.get_json()
+    input_password = params.get('root_password')
+    if not input_password == root_password:
+        return 'field: root_password is missing or do not correct', 401
+    f = request.files['file']
+    try:
+        f.save(f"static/images/{secure_filename(f.filename)}")
+    except:
+        return 'upload failed', 409
+
+
 @app.route('/ops/new/card', methods=['POST'])
 def new_support_card():
     params = request.get_json()

@@ -94,8 +94,8 @@ def crawl_new_umamusume(uri: str, update: bool = False):
     umamusume = get_umamusume_info_table(soup)
     umamusume_events = get_umamusume_event(soup)
 
-    if '二つ名' in umamusume:
-        second_name = umamusume['二つ名']
+    if '名称' in umamusume:
+        second_name = umamusume['名称']
     else:
         second_name = umamusume['固有二つ名']
 
