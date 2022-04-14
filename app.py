@@ -38,7 +38,7 @@ def send_image(path):
 @app.route('/upload', methods=['POST'])
 def get_image():
     params = request.get_json()
-    input_password = params.get('root_password')
+    input_password = request.headers.get('Authorization')
     if not input_password == root_password:
         return 'field: root_password is missing or do not correct', 401
     f = request.files['file']
