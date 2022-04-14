@@ -17,9 +17,11 @@ def test_umamusume_info_table(soup):
     data = get_umamusume_info_table(soup)
     expect = {
         "初期レア": "星3",
-        "二つ名": "エンド・オブ・スカイ",
+        "名称": "エンド・オブ・スカイ",
         "入手方法": "ウマ娘ガチャから入手",
-        "育成難易度": "★★★★☆",
+        "固有二つ名": "名優",
+        "おすすめ距離": "長距離、中距離",
+        "おすすめ脚質": "逃げ、先行"
     }
     assert data == expect
 
@@ -33,10 +35,10 @@ def test_umamusume_name(soup):
 def test_umamusume_event(soup):
     actual = get_umamusume_event(soup)
     expect = {
-        "title": "同室のあの子~そうだと思いましたわ~",
+        "title": "孤島の女王",
         "event_choice": {
-            "いい友人なんだってな": "『ウマ込み冷静』のヒントLv+2",
-            "君の夢を大事にしたいんだって": "スタミナ+10\nスキルPt+15"
+            "食料": "スピード+10",
+            "体力": "スタミナ+10"
         }
     }
     assert actual[0] == expect
