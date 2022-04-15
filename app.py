@@ -1,6 +1,7 @@
 import os
+import secrets
 
-from flask import Flask, send_from_directory, request
+from flask import Flask, send_from_directory, request, flash, redirect, url_for
 from flask_cors import CORS
 from flask_graphql import GraphQLView
 
@@ -12,6 +13,8 @@ from schema import schema
 app = Flask(__name__)
 app.debug = True
 
+CORS(app)
+
 app.add_url_rule(
     '/graphql',
     view_func=GraphQLView.as_view(
@@ -20,8 +23,6 @@ app.add_url_rule(
         graphiql=True  # for having the GraphiQL interface
     )
 )
-app.secret_key = os.environ['SECRET_KEY']
-CORS(app)
 
 root_password = os.environ['ROOT_PASSWORD']
 Base.metadata.create_all(engine)
@@ -32,8 +33,8 @@ init_admin(app, db_session)
 UPLOAD_FOLDER = 'static/images'
 ALLOWED_EXTENSIONS = {'png'}
 
-app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['SECRET_KEY'] = secrets.token_urlsafe(16)
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -136,6 +137,7 @@ def update_umamusume():
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     db_session.remove()
+
 
 
 if __name__ == '__main__':
