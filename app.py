@@ -2,6 +2,8 @@ import os
 import secrets
 
 from flask import Flask, send_from_directory, request, flash, redirect, url_for
+from werkzeug.utils import secure_filename
+from werkzeug.datastructures import  FileStorage
 from flask_cors import CORS
 from flask_graphql import GraphQLView
 
@@ -30,7 +32,7 @@ Base.metadata.create_all(engine)
 init_login(app)
 init_admin(app, db_session)
 
-UPLOAD_FOLDER = 'static/images'
+UPLOAD_FOLDER = f'{os.path.abspath(os.path.dirname(__file__))}/static/images'
 ALLOWED_EXTENSIONS = {'png'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -42,7 +44,7 @@ def allowed_file(filename):
 
 @app.route('/images/<path:path>')
 def send_image(path):
-    return send_from_directory('static/images', path)
+    return send_from_directory(app.config['UPLOAD_FOLDER'], path)
 
 
 @app.route('/upload', methods=['POST'])
@@ -67,6 +69,8 @@ def get_image():
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         print(f"{app.config['UPLOAD_FOLDER']}/{filename}")
         return 'correct', 200
+    else:
+        return 'something wrong', 500
 
 
 @app.route('/ops/new/card', methods=['POST'])
