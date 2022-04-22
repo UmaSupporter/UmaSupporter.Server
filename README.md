@@ -8,3 +8,16 @@
 이 프로젝트는 mysql을 사용한다는 것을 가정하고 작성되어 있습니다.
 
 [TBD]
+
+## 의존사항
+
+### `pip`
+
+`pip install sqlalchemy bs4 pytest\
+ flask flask-cors flask-graphql werkzeug`
+
+### `MySQL`
+
+#### macOS
+
+`brew install mysql`
