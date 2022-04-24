@@ -37,14 +37,14 @@ def get_support_card(uri: str, soup: BeautifulSoup):
         second_name=second_name,
         second_name_kr=second_name
     )
-    db_session.add(support_card)
+
     return support_card
 
 
 def get_card_event(soup: BeautifulSoup, support_card: SupportCard, update: bool = False):
     choice_tables = soup.find_all('div', {"class": "uma_choice_table"})
     for choice_table in choice_tables:
-        title = choice_table.find_previous_sibling('h3').text
+        title = choice_table.find_previous_sibling('h4').text
         card_event = CardEvent(title=title,
                                title_kr=title,
                                support_card=support_card)
@@ -99,6 +99,7 @@ def crawl_new_card(uri: str, update: bool = False):
 
     soup = BeautifulSoup(r.text, 'lxml')
     card = get_support_card(uri, soup)
+    db_session.add(card)
 
     card_from_db = db_session.query(SupportCard).filter_by(
             second_name=card.second_name,
