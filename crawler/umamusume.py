@@ -15,30 +15,11 @@ from translator import translate
 from utils import get_gamewith_id, download_image
 
 
-
-def repl():
-    string = '''                  <div class="uma_choice_table">
-                    <table>
-                      <tr>
-                        <th>バテないようにスタミナをつけよう！</th>
-                        <td>スタミナ+10<br />スキルPt+15</td>
-                      </tr>
-                      <tr>
-                        <th>ライバルを追い抜かすコツを掴もう！</th>
-                        <td>『直線巧者』のヒントLv+1</td>
-                      </tr>
-                    </table>
-                  </div>
-'''
-    soup = BeautifulSoup(string, "lxml")
-
 def get_umamusume_event_choice(soup: BeautifulSoup) -> Dict:
     results = {}
     trs: List[BeautifulSoup] = soup.find_all("tr")
-    print(f"    soup: {soup}")
     nonempty_trs = filter(lambda tr: tr.find("th") and tr.find("td"), trs)
     for tr in nonempty_trs:
-        print(tr)
         key = tr.find("th").text
         value = tr.find("td").get_text(separator="\n")
         results[key] = value
@@ -65,10 +46,8 @@ def get_umamusume_event(soup: BeautifulSoup) -> List[Dict]:
         filter(lambda h3: h3.text in to_scrape_events, soup.find_all("h3"))
     )
     for to_scrape_h3_tag in to_scrape_event_tags:
-        print(f"to_scrape_h3_tag: {to_scrape_h3_tag}")
         uma_choice_tables = get_uma_choice_table_for_h3(to_scrape_h3_tag)
         for div in uma_choice_tables:
-            print(f"    div: {div}")
             title = div.find_previous_sibling("h4").text
             event_choice = get_umamusume_event_choice(div)
             results.append({"title": title, "event_choice": event_choice})
